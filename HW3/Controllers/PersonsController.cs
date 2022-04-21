@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using HW3.Controllers.Models;
+﻿using HW3.DAL.Entities;
 using HW3.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HW3.Controllers
 {

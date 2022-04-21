@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using HW3.Controllers.Models;
 using HW3.DAL.Entities;
 
 namespace HW3.Mapper
@@ -8,7 +7,7 @@ namespace HW3.Mapper
     {
         public MapperProfile()
         {
-            CreateMap<Persons, PersonsEntity>();
+            CreateMap<Persons, PersonsEntity<int>>();
         }
     }
 }
