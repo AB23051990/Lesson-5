@@ -1,17 +1,30 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HW3.DAL.Entities
 {
-    public class BaseEntity
+    public class PersonsEntity<TUniqueId> where TUniqueId : struct
     {
-        public int Id { get; set; }
-        public bool IsDeleted { get; private set; }
+        [Column("id")]
+        public TUniqueId Id { get; set; }
 
-        public void Delete()
-        {
-            if (IsDeleted)
-                return;
-            IsDeleted = true;
-        }
+        [Column("isdeleted")]
+        public bool IsDeleted { get; set; }
+
+        
+    }
+    [Table("user", Schema = "vma")]
+    public sealed class Persons : PersonsEntity<int>
+    {
+        [Column("comment")]
+        public string? Comment { get; set; }
+
+        [Column("firstname")]
+        public string? FirstName { get; set; }
+
+        [Column("lastname")]
+        public string? LastName { get; set; }
+
+        [Column("middlename")]
+        public string? MiddleName { get; set; }
     }
 }

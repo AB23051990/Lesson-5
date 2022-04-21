@@ -1,4 +1,4 @@
-﻿using HW3.DAL.Entities;
+﻿using HW3.Controllers.Models;
 
 namespace HW3.Services
 {
@@ -8,6 +8,6 @@ namespace HW3.Services
         Task Update(T item);
         Task Delete(int id);
         Task<T> Get(int id);
-        Task<IList<PersonsEntity>> GetAll();
+        Task<IList<Persons>> GetAll();
     }
 }

@@ -1,55 +1,49 @@
-﻿using HW3.DAL.Entities;
+﻿
+using HW3.DAL.Entities;
+using HW3.DAL.Repository.DataBase;
 using HW3.DAL.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace HW3.DAL.Repository
 {
     public class PersonsRepository : IPersonsRepository
     {
-        // private readonly Persons _persons;
-
-        //public PersonsRepository(Persons persons)
-        // {
-        //    _persons = persons;
-        // }
-        public Task Add(PersonsEntity item)
+        private readonly UserDbContext _context;
+        public PersonsRepository(UserDbContext context)
         {
-            throw new NotImplementedException();
-            //await _persons.Persons.AddAsync(item);
-            //await _persons.SaveChangesAsync();
+            _context = context;
         }
-
-        public Task Delete(PersonsEntity item)
+        public bool Add(Persons entity)
         {
-            throw new NotImplementedException();
-            //_persons.Update(item);
-            //await _persons.SaveChangesAsync();
+            try
+            {
+                _context.Add(entity);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
-
-        public Task<PersonsEntity> Get(int id)
+        public IEnumerable<Persons> Get()
         {
-            throw new NotImplementedException();
-            //var customer = await _persons.Persons.FindAsync(id);
-            //if (customer == null)
-            //{
-            //    throw new ArgumentException("Клиент не найден!");
-            //}
-            //return customer;
+            
+            return _context.Person.Where(x => x.IsDeleted == false).ToList();
         }
-
-        public Task<IEnumerable<PersonsEntity>> GetAll()
+        public bool Update(Persons entity)
         {
-            throw new NotImplementedException();
-            // return await _persons
-            //     .Persons
-            //    .Where(x => x.IsDeleted == false)
-            //     .ToListAsync();
+            // skipped try/catch
+            return Commit();
         }
-
-        public Task Update(PersonsEntity item)
+        public bool Delete(int id)
+        {            
+            return Commit();
+        }
+        private bool Commit()
         {
-            throw new NotImplementedException();
-            // _persons.Persons.Update(item);
-            // await _persons.SaveChangesAsync();
+            int count = _context.SaveChanges();
+            return count > 0;
         }
     }
 }
