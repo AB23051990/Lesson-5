@@ -1,4 +1,4 @@
-﻿/*namespace HW3
+﻿namespace HW3
 {
     public sealed class TokenResponse
     {
@@ -6,4 +6,3 @@
         public string? RefreshToken { get; set; }
     }
 }
-*/

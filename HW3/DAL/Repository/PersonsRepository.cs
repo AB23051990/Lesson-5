@@ -1,5 +1,9 @@
 ﻿
-/*
+using HW3.DAL.Entities;
+using HW3.DAL.Repository.DataBase;
+using HW3.DAL.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
 namespace HW3.DAL.Repository
 {
     public class PersonsRepository : IPersonsRepository
@@ -43,4 +47,3 @@ namespace HW3.DAL.Repository
         }
     }
 }
-*/

@@ -1,10 +1,13 @@
 using AutoMapper;
+using HW3.DAL.Entities;
+using HW3.DAL.Repository;
+using HW3.DAL.Repository.DataBase;
+using HW3.DAL.Repository.Interfaces;
 using HW3.Mapper;
-using HW3.Repositories;
-using HW3.Security;
-using HW3.Validation.Requests;
+using HW3.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -24,18 +27,20 @@ namespace HW3
         {
             //string con = "Server=localhost;Port=5254;Database=HW3;Username=postgres;Password=3299;";
             //services.AddDbContext<UserDbContext>(options =>options.UseNpgsql(con));
-
-            string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<HW3DbContext>(options => options.UseNpgsql(connection));
-            services.AddSingleton<IUserService, UserService>();
-            services.AddCors();
+            
             services.AddControllers();
 
             var mapper = new MapperConfiguration(mapper =>
                 mapper.AddProfile(new MapperProfile()))
                 .CreateMapper();
             services.AddSingleton(mapper);
-            
+
+            // services.TryAddTransient<IPersonsRepository, PersonsRepository>();
+            // services.TryAddTransient<IService<Persons>, PersonsService>();
+
+            services.AddSingleton<IUserService, UserService>();
+            services.AddCors();
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,28 +60,9 @@ namespace HW3
                     };
                 });
 
-
-            services.AddScoped<IPersonsRepository, PersonsRepository>();
-
-            services.AddScoped<IGetPersonsByIdValidator, GetPersonsByIdValidator>();
-            services.AddScoped<ICreatePersonsValidator, CreatePersonsValidator>();
-            services.AddScoped<IDeletePersonsValidator, DeletePersonsValidator>();
-
-            
-
-
-            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
-            var mappers = mapperConfiguration.CreateMapper();
-            services.AddSingleton(mapper);
-
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "API Timesheets",
-                    Description = "Описание API",
-                });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Geekbrains.AuSample", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer 12345abcdef')",
@@ -107,26 +93,13 @@ namespace HW3
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Timesheets");
-                    c.RoutePrefix = string.Empty;
-                });
+                app.UseDeveloperExceptionPage();      
+                
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseCors(x => x
-                .SetIsOriginAllowed(origin => true)
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
-
-            app.UseAuthentication();
 
             app.UseAuthorization();
 

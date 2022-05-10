@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-/*
+
 namespace HW3
 {
     public interface IUserService
@@ -91,4 +91,3 @@ namespace HW3
         }
     }
 }
-*/

@@ -1,4 +1,4 @@
-﻿/*using HW3.Controllers.Models;
+﻿using HW3.Controllers.Models;
 
 namespace HW3.Services
 {
@@ -10,4 +10,4 @@ namespace HW3.Services
         Task<T> Get(int id);
         Task<IList<Persons>> GetAll();
     }
-}*/
+}

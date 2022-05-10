@@ -1,4 +1,5 @@
-﻿/*
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
 namespace HW3.DAL.Entities
 {
     public class PersonsEntity<TUniqueId> where TUniqueId : struct
@@ -26,4 +27,4 @@ namespace HW3.DAL.Entities
         [Column("middlename")]
         public string? MiddleName { get; set; }
     }
-}*/
+}
