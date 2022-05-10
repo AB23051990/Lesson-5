@@ -1,8 +1,10 @@
-﻿namespace HW3
+﻿using System;
+
+namespace HW3.Security
 {
-    public sealed class RefreshToken
+    public class RefreshToken
     {
-        public string? Token { get; set; }
+        public string Token { get; set; }
 
         public DateTime Expires { get; set; }
 

@@ -1,6 +1,5 @@
-﻿using HW3.DAL.Entities;
-using Microsoft.EntityFrameworkCore;
-
+﻿
+/*
 namespace HW3.DAL.Repository.DataBase
 {
     public sealed class UserDbContext : DbContext
@@ -19,4 +18,4 @@ namespace HW3.DAL.Repository.DataBase
 
         }
     }
-}
+}*/

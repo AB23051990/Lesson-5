@@ -1,56 +1,153 @@
-﻿using HW3.DAL.Entities;
-using HW3.Services;
+﻿using AutoMapper;
+using HW3.Controllers.Models;
+using HW3.Repositories;
+using HW3.Requests;
+using HW3.Responses;
+using HW3.Validation;
+using HW3.Validation.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HW3.Controllers
 {
-    [Route("api/contracts")]
+    [Route("api/customer")]
+    [Authorize]
     [ApiController]
     public class PersonsController : ControllerBase
     {
-        private readonly IService<Persons> _service;
+        private IMapper _mapper;
+        private IPersonsRepository _personsRepository;        
+        private IGetPersonsByIdValidator _getPersonsByIdValidator;
+        private ICreatePersonsValidator _createPersonsValidator;
+        private IDeletePersonsValidator _deletePersonsValidator;
 
-        public PersonsController(IService<Persons> service)
+        public PersonsController(
+            IPersonsRepository personsRepository,
+            IMapper mapper,
+            IGetPersonsByIdValidator getPersonsByIdValidator,
+            ICreatePersonsValidator createPersonsValidator,
+            IDeletePersonsValidator deletePersonsValidator)
         {
-            _service = service;
+            _personsRepository = personsRepository;            
+            _mapper = mapper;
+            _getPersonsByIdValidator = getPersonsByIdValidator;
+            _createPersonsValidator = createPersonsValidator;
+            _deletePersonsValidator = deletePersonsValidator;
         }
 
-        [HttpGet("persons/{id}")]
-        public async Task<IActionResult> GetPersonsById([FromRoute] int id)
+        [HttpGet("get/all")]
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(await _service.Get(id));
+            var customers = await _personsRepository.GetAll();
+            var response = new GetAllPersonsResponse()
+            {
+                Persons = new List<PersonsDto>()
+            };
+
+            foreach (Persons customer in customers)
+            {
+                response.Persons.Add(_mapper.Map<PersonsDto>(customer));
+            }
+
+            return Ok(response);
         }
 
-        [HttpGet("persons/{Name}")]
-        public async Task<IActionResult> GetPersonsByName([FromRoute] int id)
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetById([FromRoute] long id)
         {
-            return Ok(await _service.Get(id));
+            var request = new GetPersonsByIdRequest { Id = id };
+            var validation = new OperationResult<GetPersonsByIdRequest>(_getPersonsByIdValidator.ValidateEntity(request));
+
+            if (!validation.Succeed)
+            {
+                return BadRequest(validation);
+            }
+
+            var customer = await _personsRepository.GetById(request);
+            var response = new GetPersonsByIdResponse();
+
+            response.Persons = _mapper.Map<PersonsDto>(customer);
+
+            return Ok(response);
         }
 
-        [HttpGet("persons/?skip={5}&take={10}")]
-        public async Task<IActionResult> GetAllPersons()
+        [HttpPost("create/{name}")]
+        public async Task<IActionResult> Create([FromRoute] string name)
         {
-            return Ok(await _service.GetAll());
-        }
+            var request = new CreatePersonsRequest { Name = name };
+            var validation = new OperationResult<CreatePersonsRequest>(_createPersonsValidator.ValidateEntity(request));
 
-        [HttpPost("register/persons")]
-        public async Task<IActionResult> RegisterPersons([FromBody] Persons contract)
-        {
-            await _service.Create(contract);
+            if (!validation.Succeed)
+            {
+                return BadRequest(validation);
+            }
+
+            await _personsRepository.Create(request);
             return Ok();
         }
 
-        [HttpPut("update/persons/{id}")]
-        public async Task<IActionResult> UpdatePersons([FromBody] Persons contract)
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete([FromRoute] long id)
         {
-            await _service.Update(contract);
+            var request = new DeletePersonsRequest { Id = id };
+            var validation = new OperationResult<DeletePersonsRequest>(_deletePersonsValidator.ValidateEntity(request));
+
+            if (!validation.Succeed)
+            {
+                return BadRequest(validation);
+            }
+
+            await _personsRepository.Delete(request);
+            return Ok();
+        }
+        
+
+        [HttpGet("get/{customerId}/persons/{id}")]
+        public async Task<IActionResult> GetpersonById([FromRoute] long customerId, [FromRoute] long id)
+        {
+            var request = new GetPersonsByIdRequest { PersonsId = customerId, Id = id };
+            var validation = new OperationResult<GetPersonsByIdRequest>(_getPersonsByIdValidator.ValidateEntity(request));
+
+            if (!validation.Succeed)
+            {
+                return BadRequest(validation);
+            }
+
+            var person = await _personsRepository.GetById(request);
+            var response = new GetPersonsByIdResponse();
+
+            response.Persons = _mapper.Map<PersonsDto>(person);
+
+            return Ok(response);
+        }
+
+        [HttpPost("create/{customerId}/person/{name}")]
+        public async Task<IActionResult> Createperson([FromRoute] long customerId, [FromRoute] string name)
+        {
+            var request = new CreatePersonsRequest { PersonsId = customerId, Name = name };
+            var validation = new OperationResult<CreatePersonsValidator>(_createPersonsValidator.ValidateEntity(request));
+
+            if (!validation.Succeed)
+            {
+                return BadRequest(validation);
+            }
+
+            await _personsRepository.Create(request);
             return Ok();
         }
 
-        [HttpDelete("delete/persons/{id}")]
-        public async Task<IActionResult> DeletePersons([FromRoute] int id)
+        [HttpDelete("delete/{customerId}/person/{id}")]
+        public async Task<IActionResult> Deleteperson([FromRoute] long customerId, [FromRoute] long id)
         {
-            await _service.Delete(id);
+            var request = new DeletePersonsRequest { PersonsId = customerId, Id = id };
+            var validation = new OperationResult<GetPersonsByIdRequest>(_deletePersonsValidator.ValidateEntity(request));
+
+            if (!validation.Succeed)
+            {
+                return BadRequest(validation);
+            }
+
+            await _personsRepository.Delete(request);
             return Ok();
         }
     }

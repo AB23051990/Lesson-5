@@ -1,4 +1,4 @@
-﻿namespace HW3
+﻿/*namespace HW3
 {
     internal sealed class AuthResponse
     {
@@ -7,3 +7,4 @@
         public RefreshToken? LatestRefreshToken { get; set; }
     }
 }
+*/
