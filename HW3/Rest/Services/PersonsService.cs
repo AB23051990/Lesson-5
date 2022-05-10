@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using HW3.DAL.Entities;
-using HW3.DAL.Repository.Interfaces;
+﻿/*using AutoMapper;
+using HW3.Controllers.Models;
+using HW3.Repositories;
 
 namespace HW3.Services
 {
@@ -47,3 +47,4 @@ namespace HW3.Services
         }
     }
 }
+*/
