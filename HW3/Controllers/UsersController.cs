@@ -1,9 +1,13 @@
 ﻿using HW3.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using System.Collections.Generic;
+using Xunit;
 
 namespace HW3
 {
+
     public sealed class UsersController : ControllerBase
     {
         private readonly IUserService _userService;

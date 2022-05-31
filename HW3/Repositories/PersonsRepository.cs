@@ -1,26 +1,29 @@
-﻿
+﻿using Xunit;
 using Microsoft.EntityFrameworkCore;
 using HW3.Requests;
 using HW3.Controllers.Models;
+using Moq;
 
 namespace HW3.Repositories
 {
+    
     public interface IPersonsRepository
     {
         Task Create(CreatePersonsRequest request);
         Task Delete(DeletePersonsRequest request);
         Task<List<Persons>> GetAll();
         Task<Persons> GetById(GetPersonsByIdRequest request);
-        
+        IReadOnlyList<Persons> Test();
     }
     public class PersonsRepository : IPersonsRepository
     {
-        HW3DbContext _context;
-
+        private IReadOnlyList<Persons> _index;
+        
+        HW3DbContext _context;        
         public PersonsRepository(HW3DbContext context)
         {
             _context = context;
-        }
+        }       
 
         public async Task Create(CreatePersonsRequest request)
         {
@@ -63,6 +66,8 @@ namespace HW3.Repositories
 
         public async Task<List<Persons>> GetAll()
         {
+            
+
             try
             {
                 return await _context
@@ -96,5 +101,11 @@ namespace HW3.Repositories
             return null;
         }
 
+        public IReadOnlyList<Persons> Test()
+        {
+            throw new NotImplementedException();
+        }
+
+        
     }
 }
